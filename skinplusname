@@ -1,0 +1,35 @@
+package com.craftilandia.nameme;
+import java.lang.reflect.Field;
+import net.minecraft.server.v1_7_R4.EntityPlayer;
+import net.minecraft.server.v1_7_R4.PacketPlayOutNamedEntitySpawn;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+public class Main extends JavaPlugin {
+@SuppressWarnings("deprecation")
+@Override
+public boolean onCommand(CommandSender sender, Command command,	String label, String[] args) {
+if(command.getName().equalsIgnoreCase("nameme")){
+	if(sender instanceof Player){
+		Player p = (Player) sender;
+		String realName = p.getName();
+		EntityPlayer ep = ((CraftPlayer) p).getHandle();
+		if(args.length==0){p.sendMessage("necesitas poner un nick");}
+		if(args.length==1){p.sendMessage("Cambiando nombre y skin a " + args[0]);
+		ep.displayName = args[0];
+		PacketPlayOutNamedEntitySpawn packet = new PacketPlayOutNamedEntitySpawn(ep);
+		try{Field field = packet.getClass().getDeclaredField("b");
+		field.setAccessible(true);
+		Object gameProfile = field.get(packet);
+		Field name = gameProfile.getClass().getDeclaredField("name");
+		name.setAccessible(true);
+		name.set(gameProfile, args[0]);
+		}catch(Exception ex){
+		ex.printStackTrace();}
+		for(Player p2 : Bukkit.getOnlinePlayers()){
+		if(p2 != p){((CraftPlayer)p2).getHandle().playerConnection.sendPacket(packet);}}
+		ep.displayName = realName;}
+		if(args.length>=2){p.sendMessage("solo un nick");}}}return true;}}
