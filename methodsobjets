@@ -1,0 +1,47 @@
+@EventHandler
+public void onPlayerJoin(PlayerJoinEvent e){
+	Bukkit.broadcastMessage("Bienvenido");
+
+String name1 = "get some";//creates a String on name1 with the variable "get some"
+String name2 = "yoo dude";
+method1(name1);//executes method1 "public void method1(String name1){}" and sends the variable name1
+method2(name2);
+Lala Obj1 = new Lala();//creates an obj so it can access with the Obj1.*** to the class Lala, another Obj like Obj2 could access to anoter class like lolo class if we create the Obj2
+Obj1.ajua();
+Obj1.getsome();//executes the public void getsome(){} without sending any value, it could send value if configured as methods changing the () of boths
+e.getPlayer().setMaxHealth(30);
+e.getPlayer().getWorld().setKeepSpawnInMemory(false);
+boolean pvp = e.getPlayer().getWorld().getPVP();
+String pvpp = String.valueOf(pvp);
+e.getPlayer().sendMessage("hola el pvp esta " + pvpp.replace("true", "Activado").replace("false", "Desactivado"));
+e.getPlayer().setWalkSpeed((float) 0.3);
+	float veloz = e.getPlayer().getWalkSpeed();
+	String rapido=String.valueOf(veloz);
+	e.getPlayer().sendMessage("que tan rapido puedes ir? " + rapido);
+}
+public void method1(String name1) {
+Bukkit.getServer().broadcastMessage("you" + name1);
+}
+public void method2(String name2) {
+Bukkit.getServer().broadcastMessage("you" + name2);
+}
+
+//ArrayList<String> pociones = new ArrayList<String>();
+//public void arraysetup(){
+//	pociones.add(e.getPlayer);
+//	pociones.contains(e.getPlayer);
+//	pociones.remove(e.getPlayer);	
+//}
+
+
+this needs a Lala.java file next to this one with this:
+public class Lala {
+	public void getsome(){
+		Bukkit.getServer().broadcastMessage("get some from lala class");
+
+	}
+	public void ajua(){
+		Bukkit.getServer().broadcastMessage("ajua from lala class");
+
+	}
+}
