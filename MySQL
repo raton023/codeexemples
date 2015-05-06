@@ -1,0 +1,42 @@
+package com.craftilandia.mysql;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+public class Main extends JavaPlugin implements Listener {
+public static Connection conectme;
+@Override
+public void onEnable() {getServer().getPluginManager().registerEvents(this, this);}
+@Override
+public void onDisable() {
+try {if(conectme != null && conectme.isClosed()){conectme.close();}} 
+catch (SQLException e) {e.printStackTrace();}
+}
+@EventHandler
+public void logueo(PlayerLoginEvent e){
+try {conectme = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/raton023", "raton023", "mAm12345");} 
+catch (Exception e2) {}
+try {//if(e.getPlayer().getName() == e.getPlayer().getName()){
+PreparedStatement tomar = conectme.prepareStatement("SELECT * FROM `users` WHERE user_name=?;");
+//can be p=?,iteminhand=?coins=?,onlineoffline=?;
+tomar.setString(1, e.getPlayer().getName());// ... tomar.setString(2, p.getIteminhand)
+ResultSet obtenido = tomar.executeQuery();//pone en un como array los resultados
+obtenido.next();//de lo mismo que el de arriba
+int varnum = obtenido.getInt("user_level");
+PreparedStatement cambiar = conectme.prepareStatement("UPDATE `users` SET user_level=? WHERE user_name=?;");
+cambiar.setInt(1, varnum + 1);//le sumo 1 a user_level=? 
+cambiar.setString(2, e.getPlayer().getName());
+cambiar.executeUpdate();
+cambiar.close();
+tomar.close();
+obtenido.close();
+//PreparedStatement agregar = conectme.prepareStatement("INSERT INTO `users` values(?,asdf,asdfa,asfa,1,2);");
+//agregar.setString(1, e.getPlayer().getName());
+//agregar.execute();
+//agregar.close();
+} catch (Exception e2) {}finally{try {conectme.close();} catch (Exception e1) {}}}}
