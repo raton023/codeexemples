@@ -1,0 +1,26 @@
+package com.craftilandia.timermsg;
+
+import org.bukkit.Bukkit;
+import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin {
+	@Override
+	public void onEnable() {
+		some();
+
+	}
+	public void motd(ServerListPingEvent e){
+		e.setMaxPlayers(100);
+		e.setMotd("what up yoo");
+	}
+
+	public void some(){
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			@Override
+			public void run() {
+Bukkit.broadcastMessage("Hello");
+			}
+		}, 20, 100);
+
+}}
