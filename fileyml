@@ -1,0 +1,49 @@
+package com.craftilandia.fileyml;
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+public class Main extends JavaPlugin implements Listener{
+	
+	//create the file/the FileConfiguration
+	File newF = null;
+	FileConfiguration conf = null;
+	 
+@Override
+public void onEnable() {
+	getServer().getPluginManager().registerEvents(this, this);
+	getConfig().options().copyDefaults(true);
+	saveConfig();
+	//saveDefaultConfig();//gets the config.yml inside the jar and paste it on the plugin folder
+	newF = new File(getDataFolder(), "somef.yml");//nombre del archivo
+	conf = YamlConfiguration.loadConfiguration(newF);// variable para usar y aceder como conf.save();
+	if(!newF.exists()){
+		try {
+		newF.createNewFile();
+		}
+		catch(IOException e) {
+			Bukkit.getServer().getLogger().severe("no se pudo crear somef.yml");
+		}
+	}
+
+}	 
+
+@EventHandler
+public void iniciando(PlayerJoinEvent e) throws IOException{
+	Bukkit.broadcastMessage("Saludo: " + getConfig().getString("greetings"));
+	String some = "You wazzap";
+	getConfig().set("greetings.greet2", some);
+	saveConfig();
+	Bukkit.broadcastMessage("Saludo: " + getConfig().getString("greetings.greet2"));
+	String some2 = "hello man";
+	conf.set("greetings", some2);
+	conf.save(newF);
+	Bukkit.broadcastMessage("Saludo: " + conf.getString("greetings"));
+}
+}
