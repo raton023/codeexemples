@@ -1,0 +1,4 @@
+ArrayList<String> somevariable = new ArrayList<String>();
+		somevariable.add(getName());
+		somevariable.contains(getName());
+		etc...
