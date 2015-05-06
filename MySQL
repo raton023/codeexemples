@@ -19,7 +19,7 @@ catch (SQLException e) {e.printStackTrace();}
 }
 @EventHandler
 public void logueo(PlayerLoginEvent e){
-try {conectme = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/raton023", "raton023", "mAm12345");} 
+try {conectme = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mydatabase", "myuser", "mypass");} 
 catch (Exception e2) {}
 try {//if(e.getPlayer().getName() == e.getPlayer().getName()){
 PreparedStatement tomar = conectme.prepareStatement("SELECT * FROM `users` WHERE user_name=?;");
