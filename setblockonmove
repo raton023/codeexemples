@@ -1,4 +1,4 @@
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
 	        Block block = e.getPlayer.getLocation().getBlock().getRelative(BlockFace.DOWN);
 	       if (!block.isEmpty()) {
