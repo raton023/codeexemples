@@ -2,7 +2,7 @@ try {
 			            String url = "jdbc:mysql://127.0.0.1:3306/databasename"; 
 			            Connection conn = DriverManager.getConnection(url,"user","password"); 
 			            Statement st = conn.createStatement(); 
-			            st.executeUpdate("INSERT INTO users (player, password, motd, ip, online) VALUES ('raton023', 'disnet', 'asfe', '127.0.0.1', 1);"); 
+			            st.executeUpdate("INSERT INTO users (player, password, motd, ip, online) VALUES ('raton023', 'sompass', 'asfe', '127.0.0.1', 1);"); 
 			            conn.close(); 
 			        } catch (Exception e) { 
 			            System.err.println("Got an exception! "); 
