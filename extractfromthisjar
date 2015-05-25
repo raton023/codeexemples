@@ -1,0 +1,37 @@
+	public void crearmail() throws IOException{
+		@SuppressWarnings("resource")
+		java.util.jar.JarFile jarfile = new java.util.jar.JarFile(new File(getDataFolder().getAbsolutePath()+"/../login.jar")); //jar file path(here sqljdbc4.jar)
+		System.out.println(getDataFolder().getAbsolutePath());
+		java.util.Enumeration<java.util.jar.JarEntry> enu= jarfile.entries();
+	    while(enu.hasMoreElements())
+	    {
+	    	String destdir = getDataFolder().getAbsolutePath()+"/";     // can be C:/alsdl/asdas o /home/ra.. o fileinthisdir/
+	        java.util.jar.JarEntry je = enu.nextElement();
+	        System.out.println(je.getName());
+	        if(je.getName().contains("xactivation.jar")){
+	        	java.io.File fl = new java.io.File(destdir, je.getName());
+	        	if(!fl.exists())
+	            {
+	                fl.getParentFile().mkdirs();
+	                fl = new java.io.File(destdir, je.getName());
+	            }
+	        	java.io.InputStream is = jarfile.getInputStream(je);
+	            java.io.FileOutputStream fo = new java.io.FileOutputStream(fl);
+	            fo.write(is.read());
+	            fo.close();
+	            is.close();
+	        }
+	        if(je.getName().contains("xmail.jar")){
+	        	java.io.File fl = new java.io.File(destdir, je.getName());
+	        	if(!fl.exists())
+	            {
+	                fl.getParentFile().mkdirs();
+	                fl = new java.io.File(destdir, je.getName());
+	            }
+	        	java.io.InputStream is = jarfile.getInputStream(je);
+	            java.io.FileOutputStream fo = new java.io.FileOutputStream(fl);
+	            fo.write(is.read());
+	            fo.close();
+	            is.close();
+	}}
+	}
