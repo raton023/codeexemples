@@ -1,0 +1,302 @@
+Global:
+    Language: English
+    SelectionToolId: 290
+    InfoToolId: 287
+    MoveCheckInterval: 500
+    SaveInterval: 10
+    DefaultGroup: default
+    UseLeaseSystem: false
+    LeaseCheckInterval: 10
+    LeaseAutoRenew: true
+    EnablePermissions: true
+    LegacyPermissions: false
+    EnableEconomy: true
+    EnableRentSystem: false
+    RentCheckInterval: 10
+    ResidenceChatEnable: true
+    ResidenceChatColor: DARK_PURPLE
+    AdminOnlyCommands: false
+    AdminOPs: true
+    MultiWorldPlugin: Multiverse-Core
+    ResidenceFlagsInherit: true
+    PreventRentModify: true
+    StopOnSaveFault: true
+    ResidenceNameRegex: '[^a-zA-Z0-9\\-\\_]'
+    ShowIntervalMessages: false
+    CustomContainers: []
+    CustomBothClick: []
+    CustomRightClick: []
+    Flags:
+        Global: 
+            use: true
+            build: true
+            ignite: true
+            firespread: true
+            damage: true
+            creeper: true
+            tnt: true
+            pvp: true
+        WorldNameHere: 
+            #build: true
+    FlagPermission:
+        move: true
+        build: true
+        place: true
+        destroy: true
+        use: true
+        container: true
+        pvp: true
+        tp: true
+        ignite: true
+        firespread: true
+        bucket: true
+        flow: true
+        lavaflow: true
+        waterflow: true
+        creeper: true
+        tnt: true
+        monsters: true
+        animals: true
+        subzone: true
+        healing: true
+        piston: true
+        diode: true
+        lever: true
+        button: true
+        door: true
+        table: true
+        enchant: true
+        brew: true
+        bed: true
+        cake: true
+        note: true
+        trample: false
+        burn: true
+        explode: false
+        fireball: true
+    ResidenceDefault:
+        build: false
+        use: false
+        container: false
+        pvp: false
+        tnt: false
+        creeper: false
+        flow: false
+        piston: false
+        ignite: false
+        firespread: false
+    CreatorDefault:
+        build: true
+        move: true
+        use: true
+        ignite: true
+        container: true
+    GroupDefault:
+        #default: #group name
+            #build: true
+
+Groups:
+    Default: 
+       Residence:
+           CanCreate: true
+           MaxResidences: 3
+           MaxAreasPerResidence: 2
+           MaxEastWest: 16
+           MaxNorthSouth: 16
+           MaxUpDown: 256
+           MinHeight: 0
+           MaxHeight: 255
+           SubzoneDepth: 3
+           CanTeleport: true
+           Unstuck: true
+           SelectCommandAccess: true
+           ItemListAccess: true
+       Messaging:
+           CanChange: true
+           DefaultEnter: Welcome %player to %residence, owned by %owner.
+           DefaultLeave: Now leaving %residence.
+       Lease:
+          MaxDays: 16
+          RenewIncrement: 14
+       Rent:
+           MaxRents: 3
+           MaxRentables: 3
+       Economy:
+          CanBuy: true
+          CanSell: false
+          IgnoreLimits: false
+          BuyCost: 0.00
+          RenewCost: 0.00
+       Flags:
+          Permission:
+               #build: true
+          Default:
+              #build: true
+          CreatorDefault:
+              #build: true
+          GroupDefault:
+               #default: 
+                   #build: false
+          World:
+                Global: 
+                     #build: false
+                WorldNameHere: 
+                     #build: false
+
+    vip: 
+       Residence:
+           CanCreate: true
+           MaxResidences: 4
+           MaxAreasPerResidence: 2
+           MaxEastWest: 40
+           MaxNorthSouth: 40
+           MaxUpDown: 256
+           MinHeight: 0
+           MaxHeight: 255
+           SubzoneDepth: 3
+           CanTeleport: true
+           Unstuck: true
+           SelectCommandAccess: true
+           ItemListAccess: true
+       Messaging:
+           CanChange: true
+           DefaultEnter: Welcome %player to %residence, owned by %owner.
+           DefaultLeave: Now leaving %residence.
+       Lease:
+          MaxDays: 16
+          RenewIncrement: 14
+       Rent:
+           MaxRents: 3
+           MaxRentables: 3
+       Economy:
+          CanBuy: true
+          CanSell: false
+          IgnoreLimits: false
+          BuyCost: 0.00
+          RenewCost: 0.00
+       Flags:
+          Permission:
+               #build: true
+          Default:
+              #build: true
+          CreatorDefault:
+              #build: true
+          GroupDefault:
+               #default: 
+                   #build: false
+          World:
+                Global: 
+                     #build: false
+                WorldNameHere: 
+                     #build: false
+    vip+: 
+       Residence:
+           CanCreate: true
+           MaxResidences: 4
+           MaxAreasPerResidence: 2
+           MaxEastWest: 40
+           MaxNorthSouth: 40
+           MaxUpDown: 256
+           MinHeight: 0
+           MaxHeight: 255
+           SubzoneDepth: 3
+           CanTeleport: true
+           Unstuck: true
+           SelectCommandAccess: true
+           ItemListAccess: true
+       Messaging:
+           CanChange: true
+           DefaultEnter: Welcome %player to %residence, owned by %owner.
+           DefaultLeave: Now leaving %residence.
+       Lease:
+          MaxDays: 16
+          RenewIncrement: 14
+       Rent:
+           MaxRents: 3
+           MaxRentables: 3
+       Economy:
+          CanBuy: true
+          CanSell: false
+          IgnoreLimits: false
+          BuyCost: 0.00
+          RenewCost: 0.00
+       Flags:
+          Permission:
+               #build: true
+          Default:
+              #build: true
+          CreatorDefault:
+              #build: true
+          GroupDefault:
+               #default: 
+                   #build: false
+          World:
+                Global: 
+                     #build: false
+                WorldNameHere: 
+                     #build: false
+    Svip: 
+       Residence:
+           CanCreate: true
+           MaxResidences: 6
+           MaxAreasPerResidence: 2
+           MaxEastWest: 60
+           MaxNorthSouth: 60
+           MaxUpDown: 256
+           MinHeight: 0
+           MaxHeight: 255
+           SubzoneDepth: 3
+           CanTeleport: true
+           Unstuck: true
+           SelectCommandAccess: true
+           ItemListAccess: true
+       Messaging:
+           CanChange: true
+           DefaultEnter: Welcome %player to %residence, owned by %owner.
+           DefaultLeave: Now leaving %residence.
+       Lease:
+          MaxDays: 16
+          RenewIncrement: 14
+       Rent:
+           MaxRents: 3
+           MaxRentables: 3
+       Economy:
+          CanBuy: true
+          CanSell: false
+          IgnoreLimits: false
+          BuyCost: 0.00
+          RenewCost: 0.00
+       Flags:
+          Permission:
+               #build: true
+          Default:
+              #build: true
+          CreatorDefault:
+              #build: true
+          GroupDefault:
+               #default: 
+                   #build: false
+          World:
+                Global: 
+                     #build: false
+                WorldNameHere: 
+                     #build: false
+
+GroupAssignments:
+     lokin: default
+     pvpkiller: vip
+     Notch: vip+
+     raton023: Svip
+
+
+ItemList: 
+     DefaultList: 
+        Type: blacklist
+        Items: 
+           - 'BEDROCK'
+           - 'LAVA'
+           - 'WATER'
+           - 'STATIONARY_LAVA'
+           - 'STATIONARY_WATER'
+           - 'MOB_SPAWNER'
+ResidenceVersion: 2
