@@ -1,7 +1,9 @@
 String encode="";
-try {encode = Base64.getEncoder().encodeToString("something to encode".getBytes("utf-8"));}catch (UnsupportedEncodingException e) {e.printStackTrace();} 
+String toencode="something to encode";
+try {encode = Base64.getEncoder().encodeToString(toencode.getBytes("utf-8"));}catch (UnsupportedEncodingException e) {e.printStackTrace();} 
 //String encode now has the BASE64 code.
-byte[] decodestr = Base64.getDecoder().decode("somecode425rewreew==");
+String encriptado ="djas23ASD3aqfsa3=="; 
+byte[] decodestr = Base64.getDecoder().decode(encriptado);
 String some="";
 try {some= new String(decodestr, "utf-8");}catch(UnsupportedEncodingException e){}
 //String some now has the ascii of BASE64 code.
