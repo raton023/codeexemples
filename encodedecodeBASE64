@@ -1,14 +1,8 @@
-	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
-if(command.getName().equalsIgnoreCase("encode")){ 
 String encode="";
-try {encode = Base64.getEncoder().encodeToString(args[0].getBytes("utf-8"));}catch (UnsupportedEncodingException e) {e.printStackTrace();} 
-	sender.sendMessage(ChatColor.YELLOW+"Your order number is: "+encode);
-}
-if(command.getName().equalsIgnoreCase("decode")){
-	byte[] decodestr = Base64.getDecoder().decode(args[0]);
-	String some="";
-	try {some= new String(decodestr, "utf-8");}catch(UnsupportedEncodingException e){}
-	sender.sendMessage(ChatColor.YELLOW+"You just buy: "+some+" package.");
-}return true;}
+try {encode = Base64.getEncoder().encodeToString("something to encode".getBytes("utf-8"));}catch (UnsupportedEncodingException e) {e.printStackTrace();} 
+//String encode now has the BASE64 code.
+byte[] decodestr = Base64.getDecoder().decode("somecode425rewreew==");
+String some="";
+try {some= new String(decodestr, "utf-8");}catch(UnsupportedEncodingException e){}
+//String some now has the ascii of BASE64 code.
+
