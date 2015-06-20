@@ -1,0 +1,105 @@
+DefaultSettings:
+  DefaultEnterMessage: You have entered %area%
+  DefaultLeaveMessage: You have left %area%
+  OwnerFlags:
+    admin: true
+    build: true
+    use: true
+  AreaFlags:
+    build: false
+    use: false
+  MaxHeight: 20
+  MinHeight: 0
+  MaxLength: 20
+  MinLength: 0
+  MaxWidth: 20
+  MinWidth: 0
+  MinY: 0
+  MaxY: 255
+  MaxResidences: 2
+  CostEquation: (YSize * XSize * ZSize) * 0
+  Weight: 0
+vip:
+  DefaultEnterMessage: You have entered %area% of vip
+  DefaultLeaveMessage: You have left %area% of vip
+  OwnerFlags:
+    admin: true
+    build: true
+    use: true
+  AreaFlags:
+    build: false
+    use: false
+  MaxHeight: 255
+  MinHeight: 0
+  MaxLength: 30
+  MinLength: 0
+  MaxWidth: 30
+  MinWidth: 0
+  MinY: 0
+  MaxY: 255
+  MaxResidences: 3
+  CostEquation: (YSize * XSize * ZSize) * 0
+  Weight: 0
+supervip:
+  DefaultEnterMessage: You have entered %area% of super vip
+  DefaultLeaveMessage: You have left %area% of super vip
+  OwnerFlags:
+    admin: true
+    build: true
+    use: true
+  AreaFlags:
+    build: false
+    use: false
+  MaxHeight: 255
+  MinHeight: 0
+  MaxLength: 40
+  MinLength: 0
+  MaxWidth: 40
+  MinWidth: 0
+  MinY: 0
+  MaxY: 255
+  MaxResidences: 5
+  CostEquation: (YSize * XSize * ZSize) * 0
+  Weight: 0
+elite:
+  DefaultEnterMessage: You have entered %area% of elite
+  DefaultLeaveMessage: You have left %area% of elite
+  OwnerFlags:
+    admin: true
+    build: true
+    use: true
+  AreaFlags:
+    build: false
+    use: false
+  MaxHeight: 255
+  MinHeight: 0
+  MaxLength: 60
+  MinLength: 0
+  MaxWidth: 60
+  MinWidth: 0
+  MinY: 0
+  MaxY: 255
+  MaxResidences: 7
+  CostEquation: (YSize * XSize * ZSize) * 0
+  Weight: 0
+elite:
+  DefaultEnterMessage: You have entered %area% of master
+  DefaultLeaveMessage: You have left %area% of master
+  OwnerFlags:
+    admin: true
+    build: true
+    use: true
+  AreaFlags:
+    build: false
+    use: false
+  MaxHeight: 255
+  MinHeight: 0
+  MaxLength: 100
+  MinLength: 0
+  MaxWidth: 100
+  MinWidth: 0
+  MinY: 0
+  MaxY: 255
+  MaxResidences: 9
+  CostEquation: (YSize * XSize * ZSize) * 0
+  Weight: 0
