@@ -82,7 +82,7 @@ elite:
   MaxResidences: 7
   CostEquation: (YSize * XSize * ZSize) * 0
   Weight: 0
-elite:
+master:
   DefaultEnterMessage: You have entered %area% of master
   DefaultLeaveMessage: You have left %area% of master
   OwnerFlags:
