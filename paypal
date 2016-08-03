@@ -1,0 +1,181 @@
+paypal
+
+process.php
+
+<?php
+ini_set("session.cookie_lifetime","0");
+if (session_status() == PHP_SESSION_NONE) {session_start();}
+$mysqli = new mysqli('localhost','user','password','database');
+if ($mysqli->connect_error) {die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);}
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api-3t.paypal.com/nvp");
+curl_setopt($ch, CURLOPT_VERBOSE, 1);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POST, 1);
+
+if($_POST) 
+{
+$nvpreq = 'METHOD=SetExpressCheckout'.'&VERSION='.urlencode("109.0").'&PWD='.urlencode("passwordpaypal").'&USER='.urlencode("userpaypal.._api1.gmail.com").'&SIGNATURE='.urlencode("firma paypal").'&PAYMENTREQUEST_0_PAYMENTACTION='.urlencode("SALE").'&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode("MXN").'&LOCALECODE=ES'
+.'&RETURNURL='.urlencode("http://177.231.141.74/store/process.php")
+.'&CANCELURL='.urlencode("http://177.231.141.74/store/index.php")
+.'&LOGOIMG=http://177.231.141.74/store/logo.jpg'
+.'&NOSHIPPING=1'//HABRA SHIPPING O NO
+.'&PAYMENTREQUEST_0_ITEMAMT='.urlencode((($_POST["itemprice"]*$_POST["itemQty"])+($_POST["itemprice1"]*$_POST["itemQty1"])))
+.'&PAYMENTREQUEST_0_TAXAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_HANDLINGAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_SHIPDISCAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_INSURANCEAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_AMT='.urlencode((($_POST["itemprice"]*$_POST["itemQty"])+($_POST["itemprice1"]*$_POST["itemQty1"])))//aca sumar tambien shipping etc
+.'&CARTBORDERCOLOR=FFFFFF'
+.'&ALLOWNOTE=1'
+.'&L_PAYMENTREQUEST_0_NAME0='.urlencode($_POST["itemname"])
+.'&L_PAYMENTREQUEST_0_NUMBER0='.urlencode($_POST["itemnumber"])
+.'&L_PAYMENTREQUEST_0_DESC0='.urlencode($_POST["itemdesc"])
+.'&L_PAYMENTREQUEST_0_AMT0='.urlencode($_POST["itemprice"])
+.'&L_PAYMENTREQUEST_0_QTY0='. urlencode($_POST["itemQty"])
+.'&L_PAYMENTREQUEST_0_NAME1='.urlencode($_POST["itemname1"])
+.'&L_PAYMENTREQUEST_0_NUMBER1='.urlencode($_POST["itemnumber1"])
+.'&L_PAYMENTREQUEST_0_DESC1='.urlencode($_POST["itemdesc1"])
+.'&L_PAYMENTREQUEST_0_AMT1='.urlencode($_POST["itemprice1"])
+.'&L_PAYMENTREQUEST_0_QTY1='. urlencode($_POST["itemQty1"]);
+
+curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+$httpResponse = curl_exec($ch);
+if(!$httpResponse) {exit("failed:");}
+$httpResponseAr = explode("&", $httpResponse);
+$httpParsedResponseAr = array();
+foreach ($httpResponseAr as $i => $value) {
+$tmpAr = explode("=", $value);
+if(sizeof($tmpAr) > 1) {
+$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+}
+}
+if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {exit("");}
+
+if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"]))
+{
+$paypalurl ='https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token='.$httpParsedResponseAr["TOKEN"].'';
+header('Location: '.$paypalurl);
+}else{
+echo 'Error: '.urldecode($httpParsedResponseAr["L_LONGMESSAGE0"]);
+echo '<br>...<br><pre>';
+print_r($httpParsedResponseAr);
+echo '</pre>';
+}
+//guardando informacion para retorno
+$_SESSION['ItemName']=$_POST["itemname"];
+$_SESSION['ItemPrice']=$_POST["itemprice"]; 
+$_SESSION['ItemNumber']=$_POST["itemnumber"]; 
+$_SESSION['ItemDesc']=$_POST["itemdesc"]; 
+$_SESSION['ItemQty']=$_POST["itemQty"]; 
+$_SESSION['ItemTotalPrice']=($_POST["itemprice"]*$_POST["itemQty"]); 
+}
+
+if(isset($_GET["token"]) && isset($_GET["PayerID"]))
+{
+$ItemName = $_SESSION['ItemName']; 
+$ItemPrice = $_SESSION['ItemPrice'];
+$ItemNumber = $_SESSION['ItemNumber']; 
+$ItemDesc = $_SESSION['ItemDesc']; 
+$ItemQty = $_SESSION['ItemQty']; 
+$ItemTotalPrice = $_SESSION['ItemTotalPrice']; 
+
+$nvpreq2 = 'METHOD=DoExpressCheckoutPayment'.'&VERSION='.urlencode("109.0").'&PWD='.urlencode("passwd").'&USER='.urlencode("user").'&SIGNATURE='.urlencode("firma").'&TOKEN='.urlencode($_GET["token"]).'&PAYERID='.urlencode($_GET["PayerID"]).'&PAYMENTREQUEST_0_PAYMENTACTION='.urlencode("SALE").'&PAYMENTREQUEST_0_CURRENCYCODE='.urlencode("MXN")
+.'&L_PAYMENTREQUEST_0_NAME0='.urlencode($_SESSION["ItemName"])
+.'&L_PAYMENTREQUEST_0_NUMBER0='.urlencode($_SESSION["ItemNumber"])
+.'&L_PAYMENTREQUEST_0_DESC0='.urlencode($_SESSION["ItemDesc"])
+.'&L_PAYMENTREQUEST_0_AMT0='.urlencode($_SESSION["ItemPrice"])
+.'&L_PAYMENTREQUEST_0_QTY0='. urlencode($_SESSION["ItemQty"])
+.'&PAYMENTREQUEST_0_ITEMAMT='.urlencode(($_SESSION["ItemPrice"]*$_SESSION["ItemQty"]))
+.'&PAYMENTREQUEST_0_TAXAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_SHIPPINGAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_HANDLINGAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_SHIPDISCAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_INSURANCEAMT='.urlencode("0.00")
+.'&PAYMENTREQUEST_0_AMT='.urlencode(($_SESSION["ItemPrice"]*$_SESSION["ItemQty"]));
+// Set the request as a POST FIELD for curl.
+curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq2);
+// Get response from the server.
+$httpResponse = curl_exec($ch);
+if(!$httpResponse) {exit("");}
+// Extract the response details.
+$httpResponseAr = explode("&", $httpResponse);
+$httpParsedResponseAr = array();
+foreach ($httpResponseAr as $i => $value) {
+$tmpAr = explode("=", $value);
+if(sizeof($tmpAr) > 1) {
+$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+}
+}
+if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {exit("");}
+if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) 
+{
+echo 'Referencia: '.urldecode($httpParsedResponseAr["PAYMENTINFO_0_TRANSACTIONID"]);
+echo '<br>';
+$_SESSION['reference'] = urldecode($httpParsedResponseAr["PAYMENTINFO_0_TRANSACTIONID"]);
+if('Completed' == $httpParsedResponseAr["PAYMENTINFO_0_PAYMENTSTATUS"]){echo 'Pago Completado!<br>';}
+elseif('Pending' == $httpParsedResponseAr["PAYMENTINFO_0_PAYMENTSTATUS"]){echo 'El pago nesecita tu aprovacion';}
+
+//salvar informacion en MySQL
+$nvpreq3='METHOD=GetExpressCheckoutDetails'.'&VERSION='.urlencode("109.0").'&PWD='.urlencode("passwd").'&USER='.urlencode("user").'&SIGNATURE='.urlencode("firma").'&TOKEN='.urlencode($_GET["token"]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq3);
+// Get response from the server.
+$httpResponse = curl_exec($ch);
+if(!$httpResponse) {exit("");}
+// Extract the response details.
+$httpResponseAr = explode("&", $httpResponse);
+$httpParsedResponseAr = array();
+foreach ($httpResponseAr as $i => $value) {
+$tmpAr = explode("=", $value);
+if(sizeof($tmpAr) > 1) {
+$httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+}
+}
+if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {exit("");}
+
+if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) 
+{
+$refe = $_SESSION['reference'];
+$buyerName = $httpParsedResponseAr["FIRSTNAME"].' '.$httpParsedResponseAr["LASTNAME"];
+$buyerEmail = $httpParsedResponseAr["EMAIL"];
+$nick = $ItemDesc;
+//$insert_row = $mysqli->query("INSERT INTO compras(nick, nombre, email, TransactionID, ItemName, ItemNumber, ItemAmount, ItemQty, ItemDate) VALUES ('".$nick."','".$buyerName."','".$buyerEmail."','".$refe."','".$ItemName."','".$ItemNumber."','".$ItemPrice."','".$ItemQty."',NOW())");
+//if($insert_row){echo 'Compra Guardada!<br>';}else{echo 'Fallo al guardar datos, por favor contactanos con tu numero de referencia';}
+echo 'compra exitosa aca deberia guardar datos a mysql';
+
+}else{echo 'Paypal no responde, por favor contactanos con tu numero de referencia';}
+}
+
+//error al tratar de obtener el token y payer ID
+else{echo 'Error: '.urldecode($httpParsedResponseAr["L_LONGMESSAGE0"]);echo '<br>...<br><pre>';print_r($httpParsedResponseAr);echo '</pre>';}
+
+}
+?>
+
+
+
+
+
+
+index.php
+
+<?php
+?>
+
+<form method="post" action="process.php">
+<input type="hidden" name="itemnumber" value="100">
+<input type="hidden" name="itemprice" value="15.00">
+<input type="hidden" name="itemdesc" value="Buen Estilo">
+<input type="hidden" name="itemname" value="LibroStyle">
+<input type="number" name="itemQty" value="1">
+
+<input type="hidden" name="itemnumber1" value="200">
+<input type="hidden" name="itemprice1" value="55.00">
+<input type="hidden" name="itemdesc1" value="Mejorando">
+<input type="hidden" name="itemname1" value="LibroCocina">
+<input type="number" name="itemQty1" value="1">
+<input type="submit" value="Paypal">
+</form>
