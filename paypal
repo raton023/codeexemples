@@ -179,3 +179,155 @@ index.php
 <input type="number" name="itemQty1" value="1">
 <input type="submit" value="Paypal">
 </form>
+
+
+
+index.php tienda
+
+
+<?php
+include 'connect.php';
+?>
+
+<!DOCTYPE html>
+<head>
+<title>TIENDA VINTEC - Computadoras y Cosas Varias</title>
+<link rel="icon" type="image/png" href="logo.jpg">
+
+</head>
+<body>
+<center>
+<table width="1200px" bgcolor="#ccc" height="600px">
+  <tr>
+    <td width="300px" height="50px" id="productos" onclick="myProducts()" style="background-color:#f0f0f0;" onmouseover="isOn(this)" onmouseout="isOff(this)"><center><font color="" size="5">Productos</font></center>
+	</td>
+    <td width="300px" bgcolor="#f0f0f0" height="50px" id="carrito" onclick="myCart()" onmouseover="isOn(this)" onmouseout="isOff(this)"><center><font color="" size="5">Carrito (0)</font></center>
+	</td>
+    <td width="600px"><div id="stat"></div></td>
+  </tr>
+  
+  
+    <td colspan="3" bgcolor="#ddd" width="100%" style="padding:30px;"><form id="agregar"><div id="tienda"></div></form>
+	</td>
+  <tr>
+  </tr>
+</table>
+<table width="1200px"><tr><td width="60%"></td><td>Total</td><td>Comprar</td></tr><table>
+</center>
+
+
+
+<script>
+
+var carritostr="";
+var items=[];  
+var itemname=[];  
+var itemqty=[];  
+var itemprice=[];  
+var total=0;
+
+
+function addItem(item_id,item_name,item_price){
+if(items.indexOf(item_id)>-1){
+itemqty[items.indexOf(item_id)]=itemqty[items.indexOf(item_id)]+1;
+mensaje("Cantidad Actualizada");
+}else{
+items.push(item_id);
+itemname.push(item_name);
+itemprice.push(item_price);
+itemqty.push(1);
+mensaje("Producto Agregado");
+}
+total++;
+document.getElementById('carrito').innerHTML = "\
+<center><font size=\"5\">Carrito ("+total+")";
+}
+
+
+function mensaje(elmsg){
+setTimeout(timear, 50);
+setTimeout(timear2, 1000);
+function timear(){
+document.getElementById('stat').style.width = "150px";
+document.getElementById('stat').style.backgroundColor = "#f0f0f0";
+document.getElementById('stat').innerHTML = "<center>"+elmsg;
+}
+function timear2(){
+document.getElementById('stat').innerHTML = "";
+}
+
+}
+
+function delItem(item_id,item_name,item_price){
+if(items.indexOf(item_id)>-1){
+for(numb=0;numb<itemqty[items.indexOf(item_id)];numb++){total--;}
+itemqty.splice(items.indexOf(item_id),1);
+itemname.splice(items.indexOf(item_id),1);
+itemprice.splice(items.indexOf(item_id),1);
+items.splice(items.indexOf(item_id),1);//esta linea lo mas abajo del if
+}
+document.getElementById('carrito').innerHTML = "\
+<center><font size=\"5\">Carrito ("+total+")";
+mensaje("Producto Borrado");
+myCart();
+}
+
+
+function isOn(esto)
+{
+esto.style.cursor = "pointer";
+//esto.style.backgroundColor = "#e0e0e0";
+}
+function isOff(esto){
+//esto.style.backgroundColor = "#fff";
+}
+
+function myProducts(){
+document.getElementById('productos').style.backgroundColor = "#fff";
+document.getElementById('carrito').style.backgroundColor = "#f0f0f0";
+var st="<table width=\"100%\" valign=\"top\"><tr><td>Productos</td><td>Precio</td></tr>";
+
+
+<?php
+$result = mysqli_query($con,"SELECT * FROM items ");
+
+
+
+while($row = mysqli_fetch_array($result)){
+
+echo 'st=st+"<tr><td><input type=\"hidden\" value=\"'.$row['item_name'].'\">'.$row['item_name'].'</td><td><input type=\"hidden\" value=\"'.$row['item_price'].'\">'.$row['item_price'].'</td>\
+<td><span onmouseover=\"isOn(this)\" onclick=\"addItem('.$row['item_id'].' ,\''.$row['item_name'].'\',\''.$row['item_price'].'\')\" style=\"background-color:#fff;\">Add</span></td></tr>";';
+}
+?>
+
+
+st=st+"</table>";
+
+
+document.getElementById('tienda').innerHTML = "\
+<tr><td colspan=\"3\" height=\"40px\">Buscar <input type=\"text\"> <input type=\"submit\" value=\"Buscar\">\
+Categoria: <select name=\"\"><option value=\"\">...</option></select></td></tr>\
+"+st;
+
+}
+
+function myCart(){
+//document.forms["agregar"].elements[4].value;
+carritostr = "<table>";
+
+if(items.length==0){carritostr = carritostr+"<tr><td>No hay productos en el carrito</td><td></td><td></td></tr>";}
+else{
+for(itt=0;itt<items.length;itt++){
+carritostr = carritostr+"<tr><td>"+items[itt]+"<br>"+itemname[itt]+"<br>$"+itemprice[itt]+"<br>Cantidad: "+itemqty[itt]+"<br><span onclick=\"delItem("+items[itt]+")\" style=\"background-color:#fff;\" onmouseover=\"isOn(this)\">Delete</span></td><td></td><td></td></tr>";
+}
+}
+
+document.getElementById('tienda').innerHTML = "\
+<table width=\"100%\"><tr><td>Productos</td><td>Precio</td><td>Cantidad</td></tr></table>"+carritostr+"</table>";
+document.getElementById('productos').style.backgroundColor = "#f0f0f0";
+document.getElementById('carrito').style.backgroundColor = "#fff";
+}
+</script>
+
+
+</body></html>
