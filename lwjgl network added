@@ -1,0 +1,88 @@
+public class Client extends Thread{
+
+	private InetAddress ip;
+	private DatagramSocket socket;
+	public Client(String ip){//al crear un instance de client con el ip el ip es el del server
+		try {
+			this.socket=new DatagramSocket();//este se conecta en un puerto random
+			this.ip=InetAddress.getByName(ip);
+		} catch (SocketException | UnknownHostException e) {e.printStackTrace();}
+		
+	}
+	 
+	public void run(){
+		while(true){
+			byte[] data = new byte[1024];
+			DatagramPacket packet = new DatagramPacket(data, data.length);//un packet en blanco listo para recibir datos
+			try {
+				socket.receive(packet);} catch (IOException e) {e.printStackTrace();}//aca se guardan los datos en el packet
+			System.out.println("SERVER > "+new String(packet.getData()));
+		}
+	}
+	
+	public void sendData(byte[] data){
+		DatagramPacket packet = new DatagramPacket(data, data.length,ip,1331);//el cliente le envia su ip para que le pueda contestar a el
+	
+		try {
+			socket.send(packet);} catch (IOException e) {e.printStackTrace();}
+	}
+	
+}
+
+
+
+public class Server extends Thread {
+	private DatagramSocket socket;
+	
+	
+	
+	public Server(){
+		try {
+			this.socket=new DatagramSocket(1331);
+		} catch (SocketException e) {e.printStackTrace();}
+		
+	}
+	
+	public void run(){
+		while(true){
+			byte[] data = new byte[1024];
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			try {
+				socket.receive(packet);//pone lo que se envio por el socket en el packet
+				
+			} catch (IOException e) {e.printStackTrace();}
+			
+			String message= new String(packet.getData()).trim();//convierte el packet en string
+			if(message.startsWith("00")){
+			System.out.println("Cliet > "+message);
+			DatagramPacket packetresponse = new DatagramPacket("pong".getBytes(), "pong".getBytes().length,packet.getAddress(),packet.getPort());
+				try {
+					socket.send(packetresponse);} catch (IOException e) {e.printStackTrace();}
+			
+			}
+		}
+	}
+	
+}
+
+
+
+
+
+
+
+
+public GameLoop(){
+		shader= new Shader();
+		mesh= new Mesh();
+		
+		if(JOptionPane.showConfirmDialog(null, this, "desea correr el servidor?", 0)==0){
+			server = new Server();
+			server.start();
+		}
+		
+		client = new Client("localhost");
+		client.start();
+		
+		client.sendData("00ping".getBytes());
+	}
