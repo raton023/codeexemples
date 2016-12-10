@@ -1,0 +1,209 @@
+public class DummyGame{
+
+    int vaoId;
+    int vbo;//HACER LIST
+    int indexesVbo;
+    int vboId;
+    //AGREGAR UN MAP DE LAS ENTITES O ALGOASI...
+
+    int progid;//programId
+	int vertid;//vertexId
+	int fragid;//fragmentId
+	int uniformLocation;
+	
+	//private final HashMap<String, Integer> uniforms=new HashMap<>();;
+	
+	
+	int textureId;
+    
+	public static String loadResource(String fileName) throws Exception {
+        String result = "";
+        Scanner scanner=null;
+        try (InputStream in = DummyGame.class.getClass().getResourceAsStream(fileName)) {
+            scanner = new Scanner(in, "UTF-8");
+        	result = scanner.useDelimiter("\\A").next();
+        	scanner.close();
+        }
+        return result;
+    }
+       
+    public void init() throws Exception {
+        GL11.glEnable(GL11.GL_CULL_FACE);//no dibuja el otro lado del dibujo solo el lado quieres que vean esto mejora el performance
+        GL11.glCullFace(GL11.GL_BACK);//este le dice como funcionara el cullface pues solo pintara lo que dibujes en direcion contraria al reloj
+        GL11.glEnable(GL11.GL_DEPTH_TEST);//este cancela todo lo que esta detras 
+         
+        
+        
+        
+        progid = GL20.glCreateProgram();
+        vertid = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);    		
+    	GL20.glShaderSource(vertid, loadResource("/shaders/vertex.txt"));
+    	GL20.glCompileShader(vertid);      						
+    	GL20.glAttachShader(progid, vertid);
+    	fragid = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);    		
+    	GL20.glShaderSource(fragid, loadResource("/shaders/fragment.txt"));
+    	GL20.glCompileShader(fragid);      						
+    	GL20.glAttachShader(progid, fragid);
+    	GL20.glLinkProgram(progid);
+    	GL20.glValidateProgram(progid);
+        
+        
+    	uniformLocation = GL20.glGetUniformLocation(progid,"texture_sampler");
+    	//uniforms.put("texture_sampler", uniformLocation);
+    	
+    	
+    	
+    	
+        PNGDecoder decoder = new PNGDecoder( DummyGame.class.getResourceAsStream("/textures/grassblock.png"));
+        ByteBuffer buf = ByteBuffer.allocateDirect(
+        	    4 * decoder.getWidth() * decoder.getHeight());
+        	decoder.decode(buf, decoder.getWidth() * 4, Format.RGBA);
+        	buf.flip();
+        	
+        	
+        	textureId = GL11.glGenTextures();
+        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+        	GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        	GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, decoder.getWidth(),decoder.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+        	GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+ float[] vertices = 
+{
+-0.4f, 0.4f	, 0f, //0   
+-0.2f, 0.4f	, 0f, //1
+-0.2f, 0.2f	, 0f, //2   
+-0.4f, 0.2f	, 0f, //3    
+};
+ 
+ int[] indices = 
+	 {0,3,2,0,2,1//orden de como dibujarlos vertices
+	 };
+
+ 
+float[] texCoords=  new float[]{
+
+		0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f};
+ 
+ IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+ indicesBuffer.put(indices).flip();
+ 
+ 		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        verticesBuffer.put(vertices).flip();
+
+        vaoId = GL30.glGenVertexArrays();//crea vao
+        GL30.glBindVertexArray(vaoId);//activa vao
+        
+        
+        vbo = GL15.glGenBuffers();//crea vbo
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);//activa vbo
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);//sube datos a vbo
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);//le dice como usarlos
+    	
+        
+        
+        //crea indices vbo  pues lo pondra en el slot 2...
+    	indexesVbo = GL15.glGenBuffers();//crea indices
+    	GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexesVbo);//activa
+    	GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);//le da los datos
+    
+    	
+    	
+    	//textures
+    	vboId = GL15.glGenBuffers();
+    	//vboIdList.add(vboId);
+    	FloatBuffer textCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
+    	textCoordsBuffer.put(texCoords).flip();
+    	GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+    	GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textCoordsBuffer, GL15.GL_STATIC_DRAW);
+    	GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);//slot 1 cantidad de datos 2 porque es x ,y ... sin z
+    	
+    
+    	
+    	
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);//desactiva vbo
+        GL30.glBindVertexArray(0);//desactiva vao
+        
+    }
+    
+public void input(){
+    	
+    }
+public void update(){
+	
+}   
+
+    public void render(Window window) {
+        if ( window.isResized() ) {
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
+
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        
+        
+        GL20.glUseProgram(progid);
+
+        GL20.glUniform1i(uniformLocation, 0);//slot 0 el primero es el index donde esta el uniform
+        
+        //seting uniforms los que se necesitan cambiar
+        
+        // Activate firs texture bank
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        // Bind the texture
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+        
+        //aca iria el shader start que es shader use program..
+        GL30.glBindVertexArray(1);
+        GL20.glEnableVertexAttribArray(0);//activa slot 0 vbo... talves poner un for loop que vaya por la list de vbo y se brinque el indices porque se tendrai que poner 1 2 3...
+        GL20.glEnableVertexAttribArray(1);
+        //poner eston en un for loop a todos los entities de este mesh y poner un meshmap arriba 
+        GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);//mesh.getVertexCount es indices.length son la cantidad de pixeles osea vertices(x,y,z) que se dibujaran
+        //end loop
+        
+        GL20.glDisableVertexAttribArray(0);//talves poner un for loop que vaya por la list de vbo y se brinque el indices
+        GL20.glDisableVertexAttribArray(1);
+        GL30.glBindVertexArray(0);
+        //aca iria el shader finish que es use program 0 o algo asi 
+        
+
+    	GL20.glUseProgram(0);
+
+        
+        
+    }
+    
+    
+    
+
+public void cleanUP(){
+
+		GL20.glUseProgram(0);
+		GL20.glDetachShader(progid, vertid);
+		GL20.glDetachShader(progid, fragid);
+		GL20.glDeleteProgram(progid);
+		
+	    GL20.glDisableVertexAttribArray(0);
+	    GL20.glDisableVertexAttribArray(1);
+	    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	    GL15.glDeleteBuffers(vbo);
+	    GL15.glDeleteBuffers(indexesVbo);
+	    GL15.glDeleteBuffers(vboId);
+	    GL30.glBindVertexArray(0);
+	    GL30.glDeleteVertexArrays(vaoId);
+		
+	    
+}
+}
