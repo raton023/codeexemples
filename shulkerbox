@@ -1,0 +1,130 @@
+package com.locuracraft.zlc;
+
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+
+
+
+public class Tests implements Listener {
+
+	@EventHandler
+	private void sneaks(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		
+		if(p.isSneaking()) {
+			ItemStack[] inv = crearInv(p.getInventory().getContents());
+			p.getWorld().dropItem(p.getLocation(), inv[0]);
+			p.getWorld().dropItem(p.getLocation(), inv[1]);
+		}
+		else 
+		{
+			if(p.getInventory().contains(Material.GRAY_SHULKER_BOX))
+				{
+				
+				ItemStack[] shulkersBoxs = new ItemStack[2];
+				
+				shulkersBoxs[0] = p.getInventory().getItem(0);
+				//p.getInventory().setItem(p.getInventory().first(Material.GRAY_SHULKER_BOX),null);
+				
+				shulkersBoxs[1] = p.getInventory().getItem(1);
+				//p.getInventory().setItem(p.getInventory().first(Material.GRAY_SHULKER_BOX),null);
+				
+				getInv(shulkersBoxs);
+				
+				//ItemStack[] i = getShulkerInv(p.getInventory().getItemInMainHand());
+
+				//System.out.println(i.toString());
+				//p.getInventory().setContents(i);
+				}
+			
+		}
+	}
+	
+	
+	private ItemStack[] crearInv(ItemStack[] inventario) {
+		ItemStack[] inv = new ItemStack[27];
+		ItemStack[] inv2 = new ItemStack[27];
+		for(int i=0;i<41;i++) {
+			if(i<27) {
+				inv[i] = inventario[i];
+				continue;
+				}
+			else if(i<41) {
+			inv2[i-27]=inventario[i];
+			continue;
+			}
+			//else {
+			//	if(i==41)inv2[i-27]=mainHand;
+			//	if(i==42)inv2[i-27]=offHand;
+			//}
+		}
+		inv2[26]=new ItemStack(Material.DEAD_BUSH);
+		ItemStack i1 = saveInShulker(inv);
+		ItemStack i2 = saveInShulker(inv2);
+		ItemStack[] ii = new ItemStack[2];
+		ii[0]=i1;
+		ii[1]=i2;
+		return ii;
+	}
+	
+	
+	
+	private void getInv(ItemStack[] shulkersBoxs) {
+		ItemStack[] shulker1 = getShulkerInv(shulkersBoxs[0]);
+		ItemStack[] shulker2 = getShulkerInv(shulkersBoxs[1]);
+
+		
+		if(shulker1[26]!=null && shulker1[26].getType().equals(Material.DEAD_BUSH)) 
+		{
+			System.out.println("el 1");
+		}
+		else if(shulker2[26].getType().equals(Material.DEAD_BUSH))
+		{
+			System.out.println("el 2");
+		}
+		
+		
+	}
+	
+	
+	/**
+	 * regresa un item de cofre shulker con el inventario enviado dentro
+	 * @param invContents el inventario a guardar
+	 * @return
+	 */
+	private ItemStack saveInShulker(ItemStack[] invContents) {
+		ItemStack i = new ItemStack(Material.GRAY_SHULKER_BOX);//bchest.getInventory().getItem(0);
+		ItemMeta im = i.getItemMeta();
+		BlockState sbox = ((BlockStateMeta)im).getBlockState();
+		((ShulkerBox)sbox).getInventory().setContents(invContents);
+		sbox.update(true,false);
+		((BlockStateMeta)im).setBlockState(sbox);
+		i.setItemMeta(im);
+		return i;
+	}
+	
+	/**
+	 * Regresa el inventario getContents dentro de un item de cofre shulker
+	 * @param grayShulerBox
+	 * @return
+	 */
+	private ItemStack[] getShulkerInv(ItemStack grayShulerBox) {
+		//if(!grayShulerBox.getType().equals(Material.GRAY_SHULKER_BOX))return null;
+		ShulkerBox sbox = (ShulkerBox) ((BlockStateMeta)grayShulerBox.getItemMeta()).getBlockState();
+		return sbox.getInventory().getContents();
+	}
+	
+	//private void saveInvInShulker(ItemStack shulker, ItemStack[] contents) {}
+	
+	
+	
+	
+}
