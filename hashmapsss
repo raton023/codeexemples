@@ -1,0 +1,89 @@
+
+public class Tests {
+
+
+	
+public static void main(String[] args) {
+	
+	Map<String, Float>x=new HashMap<>();
+	x.put("meta", 34F);
+	
+	Map<String, Object>i=new HashMap<>();
+	i.put("espada", x);
+	saveInv(i);
+}
+
+
+
+
+
+	
+	//solo usarlo en ciertos items que tienen cosas que no guarda el 
+	//normalmente el getConfig().set.... como ItemStack
+public static void saveInv(Map<String, Object>m) {//ItemStack item){
+	
+	for (Map.Entry<?,?> i:m.entrySet()) {
+	//for (Map.Entry<String,Object> i:item.serialize().entrySet()) {
+	    String key=i.getKey().toString();
+	    Object value=i.getValue();
+	    if(value instanceof String) {save(key, value.toString());}
+	    else if(value instanceof Integer) {save(key, ((Integer) value).intValue());}
+	    else if(value instanceof Double) {save(key, ((Double) value).doubleValue());}
+	    else if(value instanceof Float) {save(key, ((Float) value).floatValue());}
+	    else if(value instanceof Short) {save(key, ((Short) value).shortValue());}
+	    else if(value instanceof Long) {save(key, ((Long) value).longValue());}
+	    else if(value instanceof Character) {save(key, ((Character) value).charValue());}
+	    else if(value instanceof Byte) {save(key, ((Byte) value).byteValue());}
+	    else if(value instanceof Boolean) {save(key, ((Boolean) value).booleanValue());}
+	    else if(value instanceof Object) {save(key, value);}
+	}
+}
+
+
+//para el obj
+public static void saveInv(String parent, Map<?, ?>m) {//ItemStack item){
+	
+	for (Map.Entry<?,?> i:m.entrySet()) {
+	//for (Map.Entry<String,Object> i:item.serialize().entrySet()) {
+	    String key=i.getKey().toString();
+	    Object value=i.getValue();
+	    if(value instanceof String) {save(parent, key, value.toString());}
+	    else if(value instanceof Integer) {save(parent, key, ((Integer) value).intValue());}
+	    else if(value instanceof Double) {save(parent, key, ((Double) value).doubleValue());}
+	    else if(value instanceof Float) {save(parent, key, ((Float) value).floatValue());}
+	    else if(value instanceof Short) {save(parent, key, ((Short) value).shortValue());}
+	    else if(value instanceof Long) {save(parent, key, ((Long) value).longValue());}
+	    else if(value instanceof Character) {save(parent, key, ((Character) value).charValue());}
+	    else if(value instanceof Byte) {save(parent, key, ((Byte) value).byteValue());}
+	    else if(value instanceof Boolean) {save(parent, key, ((Boolean) value).booleanValue());}
+	    //else if(value instanceof Object) {save(parent, key, value);}
+	}
+}
+		
+	
+	
+		
+private static void save(String key, int valor) {System.out.println("key: "+key+", int: "+valor);}
+private static void save(String key, double valor) {System.out.println("key: "+key+", double: "+valor);}
+private static void save(String key, float valor) {System.out.println("key: "+key+", float: "+valor);}
+private static void save(String key, boolean valor) {System.out.println("key: "+key+", boolean: "+valor);}
+private static void save(String key, String valor) {System.out.println("key: "+key+", String: "+valor);}
+private static void save(String key, byte valor) {System.out.println("key: "+key+", byte: "+valor);}
+private static void save(String key, short valor) {System.out.println("key: "+key+", short: "+valor);}
+private static void save(String key, long valor) {System.out.println("key: "+key+", long: "+valor);}
+private static void save(String key, char valor) {System.out.println("key: "+key+", char: "+valor);}
+private static void save(String key, Object valor) {saveInv(key, valor);}
+
+
+private static void save(String parent, String key, int valor) {System.out.println("parent: "+parent+" key: "+key+", int: "+valor);}
+private static void save(String parent, String key, double valor) {System.out.println("parent: "+parent+" key: "+key+", double: "+valor);}
+private static void save(String parent, String key, float valor) {System.out.println("parent: "+parent+" key: "+key+", float: "+valor);}
+private static void save(String parent, String key, boolean valor) {System.out.println("parent: "+parent+" key: "+key+", boolean: "+valor);}
+private static void save(String parent, String key, String valor) {System.out.println("parent: "+parent+" key: "+key+", String: "+valor);}
+private static void save(String parent, String key, byte valor) {System.out.println("parent: "+parent+" key: "+key+", byte: "+valor);}
+private static void save(String parent, String key, short valor) {System.out.println("parent: "+parent+" key: "+key+", short: "+valor);}
+private static void save(String parent, String key, long valor) {System.out.println("parent: "+parent+" key: "+key+", long: "+valor);}
+private static void save(String parent, String key, char valor) {System.out.println("parent: "+parent+" key: "+key+", char: "+valor);}
+//private static void save(String parent, String key, Object valor) {saveInv(key, (HashMap<?, ?>)valor);}
+
+}
