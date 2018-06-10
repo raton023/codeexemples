@@ -1,0 +1,234 @@
+package com.frystcraft.zMejoras.comandos;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import javax.imageio.ImageIO;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+
+public class Grabar implements Listener,CommandExecutor{
+
+	
+	
+	private class Pixel{
+		private int x,z,color;
+		private Material m;
+		private Pixel(int x,int z,Material m){
+			this.x=x;
+			this.z=z;
+			this.m=m;
+			setColor(m,true);
+		}
+		private void setColor(Material m,boolean nueva) {
+			if(nueva) 
+			{
+				if(m.equals(Material.DIAMOND_ORE))
+					this.color=Colores.DIAMANTE.color;
+				else if(m.equals(Material.EMERALD_ORE))
+					this.color=Colores.ESMERALDA.color;
+				else if(m.equals(Material.GOLD_ORE))
+					this.color=Colores.ORO.color;
+				else if(m.equals(Material.IRON_ORE))
+					this.color=Colores.HIERRO.color;
+				else if(m.equals(Material.LAPIS_ORE))
+					this.color=Colores.LAPISLAZULI.color;
+				else if(m.equals(Material.REDSTONE_ORE)||m.equals(Material.GLOWING_REDSTONE_ORE))
+					this.color=Colores.REDSTONE.color;
+				else if(m.equals(Material.COAL_ORE))
+					this.color=Colores.CARBON.color;
+				else this.color=Colores.MINA.color;
+			}
+			else 
+			{
+				if(m.equals(Material.DIAMOND_ORE) || getM().equals(Material.DIAMOND_ORE))
+				{
+					this.color=Colores.DIAMANTE.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.EMERALD_ORE) || getM().equals(Material.EMERALD_ORE))
+				{
+					this.color=Colores.ESMERALDA.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.GOLD_ORE) || getM().equals(Material.GOLD_ORE))
+				{
+					this.color=Colores.ORO.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.IRON_ORE) || getM().equals(Material.IRON_ORE))
+				{
+					this.color=Colores.HIERRO.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.LAPIS_ORE) || getM().equals(Material.LAPIS_ORE))
+				{
+					this.color=Colores.LAPISLAZULI.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.REDSTONE_ORE) || getM().equals(Material.REDSTONE_ORE)||m.equals(Material.GLOWING_REDSTONE_ORE) || getM().equals(Material.GLOWING_REDSTONE_ORE))
+				{
+					this.color=Colores.REDSTONE.color;
+					this.m=m;
+				}
+				else if(m.equals(Material.COAL_ORE) || getM().equals(Material.COAL_ORE))
+				{
+					this.color=Colores.CARBON.color;
+					this.m=m;
+				}
+				else 
+				{
+					this.color=Colores.MINA.color;
+					this.m=m;
+				}
+				
+			}			
+		}
+		private Material getM() {
+			return this.m;
+		}
+	}
+	
+	private HashMap<Location,Pixel> pixeles=new HashMap<Location,Pixel>();
+	private HashSet<Player>grabando=new HashSet<Player>();	
+	private int minX=0,maxX=0,minZ=0,maxZ=0;
+	int levelX=0,levelZ=0;
+	
+	private enum Colores{
+		MINA(215,215,215),
+		DIAMANTE(0,155,255),
+		CARBON(0,0,0),
+		HIERRO(106,104,115),
+		ORO(255,192,0),
+		ESMERALDA(0,163,66),
+		REDSTONE(255,0,0),
+		LAPISLAZULI(0,0,120);
+		private int color;
+		private Colores(int r,int v,int a){
+			color=(r<<16)|(v<<8)|a;
+		}
+	}
+
+	
+	@EventHandler
+	public void alRomper(BlockBreakEvent e){
+		if(!grabando.contains(e.getPlayer()))return;
+		Block b=e.getBlock();//ponerle final
+		Location l = b.getLocation().clone();
+		l.setY(0);
+		//if(!grabando.contains(e.getPlayer())) {
+		//	grabando.add(e.getPlayer());
+		//	levelX=e.getBlock().getX()*(-1);
+		//	levelZ=e.getBlock().getZ()*(-1);
+		//}
+		//terminar de grabar si esta muy alejado del bloque... y generar y enviar imagen
+		int x=b.getX()+levelX;
+		int z=b.getZ()+levelZ;
+		if(x>maxX)maxX=x;else if(x<minX)minX=x;
+		if(z>maxZ)maxZ=z;else if(z<minZ)minZ=z;
+		if(pixeles.containsKey(l)) 
+			pixeles.get(l).setColor(b.getType(),false);
+		else
+			pixeles.put(l, new Pixel(x, z, b.getType()));
+	}
+	
+	@EventHandler
+	public void saliendo(PlayerQuitEvent e) 
+	{
+		if(grabando.contains(e.getPlayer()))
+			crearImagen(e.getPlayer());
+	}
+	
+	private String crearImagen(Player player) {
+		long l=System.currentTimeMillis();
+		try {
+			int dX=maxX-minX;
+			int dZ=maxZ-minZ;
+			if(dX<0)
+				dX=dX*-1;//lo hace positivo
+			if(dZ<0)
+				dZ=dZ*-1;//lo hace positivo
+			
+			//si la imagen es muy grande cancelar
+			//estos son bloques... esto guardaria una imagen de 512 bloques de largo maximo...
+			if(dX>512||dZ>512) {
+				grabando.remove(player);
+				return "Error, no se guardo, tamaño maximo permitido 512x512 bloques";
+			}
+			
+			ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			int blockSize=8;
+			BufferedImage ni=new BufferedImage((1+dX)*blockSize,(1+dZ)*blockSize,BufferedImage.TYPE_INT_RGB);
+			Graphics2D g2d=ni.createGraphics();
+			g2d.setPaint(Color.DARK_GRAY);
+			g2d.fillRect(0,0,ni.getWidth(),ni.getHeight());
+			for(Pixel p:pixeles.values()){
+				int x=(p.x-minX)*blockSize;
+				int z=(p.z-minZ)*blockSize;
+				for(int X=0;X<blockSize;X++)
+					for(int Z=0;Z<blockSize;Z++)
+						ni.setRGB(x+X,z+Z,p.color);
+			}
+			
+			ImageIO.write(ni, "png", new File("/home/mickey/Desktop/"+l+".png"));
+			baos.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				grabando.remove(player);
+				return ex.getMessage();
+				}
+		grabando.remove(player);
+		return "https://www.frystcraft.com/grabacion/"+l+".png";
+	}
+	
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		// /grabar iniciar jugador
+		if(!sender.isOp())return true; 
+		if(args.length==2) {
+			Player p= Bukkit.getPlayer(args[1]);
+			if(args[0].equalsIgnoreCase("iniciar")) {
+				if(p==null) 
+				{
+					sender.sendMessage(args[1]+" no esta conectado");
+					return true;
+				}
+				else 
+				{
+					grabando.add(p);
+					levelX=p.getLocation().getBlockX()*(-1);
+					levelZ=p.getLocation().getBlockZ()*(-1);
+					sender.sendMessage("Se ha iniciado la grabacion!");
+					return true;
+				}
+			}
+			else if(args[0].equalsIgnoreCase("terminar")) {
+				sender.sendMessage("la imagen esta en: "+crearImagen(p));
+				return true;
+			}
+		}else {
+			sender.sendMessage("/grabar iniciar <jugador>\n/grabar terminar <jugador>");
+		}
+		return true;
+	}
+}
