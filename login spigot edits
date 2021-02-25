@@ -1,0 +1,35 @@
+Spigot/Spigot-Server/
+
+
+
+
+
+LoginListener.java
+   public static HashSet<String> listaPremiums=new HashSet<String>();//agregada arriba
+   
+   //cambiar estos condicionales para que tambien acepten la lista
+   if (this.server.isServerInOnlineMode()&& !this.networkManager.isLocalChannel())
+        {
+this.currentLoginState = NetHandlerLoginServer.LoginState.KEY;
+this.networkManager.sendPacket(new SPacketEncryptionRequest("", this.server.getKeyPair().getPublic(), this.verifyToken));
+ }
+  else
+    {
+       this.currentLoginState = NetHandlerLoginServer.LoginState.READY_TO_ACCEPT;
+      }
+      
+      
+      
+   LoginListener.listaPremiums.add(p.getName());
+  
+NetHandlerLoginServer.java 
+
+
+en el plugin modificar lista static con algo asi
+LoginListener.listaPremiums.add(p.getName());
+  
+  
+  
+  
+  
+  mvn clean package
